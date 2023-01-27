@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+require("dotenv/config");
 
 const app = express();
 
@@ -7,10 +8,12 @@ app.use(express.json());
 
 // Setup database
 mongoose.set("strictQuery", false);
-const mongodbUri = "mongodb://127.0.0.1:27017/SimpleTodo";
 
 mongoose
-  .connect(mongodbUri, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(process.env.DB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then((result) => app.listen(3000))
   .catch((err) => console.log(err));
 
