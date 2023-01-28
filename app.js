@@ -4,7 +4,9 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const connectDb = require("./config/dbConn");
+const cors = require("cors");
 const { logger } = require("./middleware/logEvents");
+const errorHandler = require("./middleware/errorHandler");
 const PORT = process.env.PORT;
 
 // Connect to the database
@@ -13,6 +15,20 @@ connectDb();
 
 // Custom logger middleware
 app.use(logger);
+
+// cors policy
+const whiteList = ["http://localhost:3000", "https://www.google.com"];
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (whiteList.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  optionsSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
 
 // Parse urlencoded data
 app.use(express.urlencoded({ extended: false }));
@@ -33,9 +49,7 @@ app.all("*", (req, res) => {
   }
 });
 
-app.use((err, req, res) => {
-  res.status(422).json({ error: err.message });
-});
+app.use(errorHandler);
 
 mongoose.connection.once("open", () => {
   console.log("Connected to MongoDB");
