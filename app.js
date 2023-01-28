@@ -39,6 +39,9 @@ app.use(express.json());
 // Handle category related requests
 app.use("/api/categories", require("./routes/category"));
 
+// Handle task related requests
+app.use("/api/tasks", require("./routes/task"));
+
 // Handle 404 messages
 app.all("*", (req, res) => {
   res.status(404);
