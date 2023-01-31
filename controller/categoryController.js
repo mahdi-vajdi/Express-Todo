@@ -6,10 +6,11 @@ const createCategory = async (req, res) => {
     return res.status(400).json({ message: "Category title is required." });
 
   try {
-    const category = await Category.create(req.body);
+    req.body.username = req.user; // add username property to the object
+    const createdCategory = await Category.create(req.body);
     return res.status(201).json({
       message: "Successfully created the category",
-      category,
+      category: createdCategory,
     });
   } catch (err) {
     return res.status(500).json({ error: "Could not create category" });
@@ -17,7 +18,7 @@ const createCategory = async (req, res) => {
 };
 
 const getAllCategories = async (req, res) => {
-  const categories = await Category.find();
+  const categories = await Category.find({ username: req.user });
   if (!categories || categories.length === 0)
     return res.status(404).json({ message: "There is no categories!" });
 
@@ -30,7 +31,10 @@ const getCategory = async (req, res) => {
       .status(400)
       .json({ message: "The requested ID does not have a correct form" });
 
-  const category = await Category.findById({ _id: req.params.id }, req.body);
+  const category = await Category.findOne({
+    _id: req.params.id,
+    username: req.user,
+  });
   if (!category)
     return res
       .status(404)
@@ -45,8 +49,8 @@ const updateCategory = async (req, res) => {
       .status(400)
       .json({ message: "The requested ID does not have a correct form" });
 
-  const category = await Category.findByIdAndUpdate(
-    { _id: req.params.id },
+  const category = await Category.findOneAndUpdate(
+    { _id: req.params.id, username: req.user },
     req.body,
     { returnDocument: "after" }
   );
@@ -65,7 +69,10 @@ const deleteCategory = async (req, res) => {
       .status(400)
       .json({ message: "The requested ID does not have a correct form" });
 
-  const category = await Category.findByIdAndRemove({ _id: req.params.id });
+  const category = await Category.findOneAndDelete({
+    _id: req.params.id,
+    username: req.user,
+  });
   if (!category)
     return res
       .status(404)

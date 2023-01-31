@@ -6,6 +6,8 @@ router.get("/", taskController.getAllTasks);
 
 router.get("/:id", taskController.getTask);
 
+router.get("/byCategory/:categoryId", taskController.getTaskByCategory);
+
 router.post("/", taskController.createTask);
 
 router.put("/:id", taskController.updateTask);
