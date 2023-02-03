@@ -1,5 +1,5 @@
 const { default: mongoose } = require("mongoose");
-const Task = require("../model/Task");
+const Task = require("../models/task.model");
 
 const createTask = async (req, res) => {
   if (!req?.body?.category || !req?.body?.title)

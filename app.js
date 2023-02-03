@@ -3,13 +3,13 @@ const express = require("express");
 const app = express();
 const { urlencoded } = require("express");
 const mongoose = require("mongoose");
-const connectDb = require("./config/dbConn");
-const credentials = require("./middleware/credentials");
+const connectDb = require("./configs/database.config");
+const credentials = require("./middlewares/credentials.middleware");
 const cors = require("cors");
-const corsOptions = require("./config/corsOptions");
-const { logger } = require("./middleware/logEvents");
-const errorHandler = require("./middleware/errorHandler");
-const authenticate = require("./middleware/auth.middleware");
+const corsOptions = require("./configs/corsOptions.config");
+const { logger } = require("./middlewares/logEvents.middleware");
+const errorHandler = require("./middlewares/errorHandler.middleware");
+const authenticate = require("./middlewares/auth.middleware");
 const cookieParser = require("cookie-parser");
 const PORT = process.env.PORT;
 
@@ -37,8 +37,8 @@ app.use(cookieParser());
 // Auth routes
 app.use("/api/auth", require("./routes/auth.route"));
 // Protected routes
-app.use("/api/categories", authenticate, require("./routes/category"));
-app.use("/api/tasks", authenticate, require("./routes/task"));
+app.use("/api/categories", authenticate, require("./routes/category.route"));
+app.use("/api/tasks", authenticate, require("./routes/task.route"));
 
 // Handle 404 messages
 app.all("*", (req, res) => {
