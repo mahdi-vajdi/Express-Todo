@@ -6,7 +6,7 @@ const createCategory = async (req, res) => {
     return res.status(400).json({ message: "Category title is required." });
 
   try {
-    req.body.username = req.user; // add username property to the object
+    req.body.username = req.user.username; // add username property to the object
     const createdCategory = await Category.create(req.body);
     return res.status(201).json({
       message: "Successfully created the category",
@@ -18,7 +18,8 @@ const createCategory = async (req, res) => {
 };
 
 const getAllCategories = async (req, res) => {
-  const categories = await Category.find({ username: req.user });
+  const categories = await Category.find({ username: req.user.username });
+  console.log("categories: ", categories);
   if (!categories || categories.length === 0)
     return res.status(404).json({ message: "There is no categories!" });
 
@@ -33,7 +34,7 @@ const getCategory = async (req, res) => {
 
   const category = await Category.findOne({
     _id: req.params.id,
-    username: req.user,
+    username: req.user.username,
   });
   if (!category)
     return res
@@ -50,7 +51,7 @@ const updateCategory = async (req, res) => {
       .json({ message: "The requested ID does not have a correct form" });
 
   const category = await Category.findOneAndUpdate(
-    { _id: req.params.id, username: req.user },
+    { _id: req.params.id, username: req.user.username },
     req.body,
     { returnDocument: "after" }
   );
@@ -71,7 +72,7 @@ const deleteCategory = async (req, res) => {
 
   const category = await Category.findOneAndDelete({
     _id: req.params.id,
-    username: req.user,
+    username: req.user.username,
   });
   if (!category)
     return res

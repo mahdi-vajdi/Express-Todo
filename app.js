@@ -9,7 +9,7 @@ const cors = require("cors");
 const corsOptions = require("./config/corsOptions");
 const { logger } = require("./middleware/logEvents");
 const errorHandler = require("./middleware/errorHandler");
-const verifyJWT = require("./middleware/verifyJWT");
+const authenticate = require("./middleware/auth.middleware");
 const cookieParser = require("cookie-parser");
 const PORT = process.env.PORT;
 
@@ -34,12 +34,11 @@ app.use(express.json());
 // Parse cookies
 app.use(cookieParser());
 
-// Routes
-app.use("/api/auth", require("./routes/auth"));
-// routes under this middleware will be atuhorized
-app.use(verifyJWT);
-app.use("/api/categories", require("./routes/category"));
-app.use("/api/tasks", require("./routes/task"));
+// Auth routes
+app.use("/api/auth", require("./routes/auth.route"));
+// Protected routes
+app.use("/api/categories", authenticate, require("./routes/category"));
+app.use("/api/tasks", authenticate, require("./routes/task"));
 
 // Handle 404 messages
 app.all("*", (req, res) => {

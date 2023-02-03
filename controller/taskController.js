@@ -8,7 +8,7 @@ const createTask = async (req, res) => {
       .json({ message: "category id and task title are required." });
 
   try {
-    req.body.username = req.user; // add username property to the object
+    req.body.username = req.user.username; // add username property to the object
     const result = await Task.create(req.body);
     res
       .status(201)
@@ -19,7 +19,7 @@ const createTask = async (req, res) => {
 };
 
 const getAllTasks = async (req, res) => {
-  const tasks = await Task.find({ username: req.user });
+  const tasks = await Task.find({ username: req.user.username });
   if (!tasks || tasks.length === 0)
     return res.status(404).json({ message: "There is no tasks" });
   res.status(200).json(tasks);
@@ -32,7 +32,7 @@ const getTask = async (req, res) => {
       .json({ message: "The requested ID does not have a correct form" });
 
   const task = await Task.findOne(
-    { _id: req.params.id, username: req.user },
+    { _id: req.params.id, username: req.user.username },
     req.body
   );
   if (!task)
@@ -56,7 +56,7 @@ const updateTask = async (req, res) => {
       .json({ message: "The requested ID does not have a correct form" });
 
   const task = await Task.findOneAndUpdate(
-    { _id: req.params.id, username: req.user },
+    { _id: req.params.id, username: req.user.username },
     req.body,
     {
       returnDocument: "after",
@@ -79,7 +79,7 @@ const deleteTask = async (req, res) => {
 
   const task = await Task.findOneAndDelete({
     _id: req.params.id,
-    username: req.user,
+    username: req.user.username,
   });
   if (!task)
     return res.status(404).json({ message: "No task matches the provided ID" });
