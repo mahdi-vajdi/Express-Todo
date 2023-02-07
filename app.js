@@ -37,6 +37,7 @@ app.use(cookieParser());
 // Auth routes
 app.use("/api/auth", require("./routes/auth.route"));
 // Protected routes
+app.use("/api/user", authenticate, require("./routes/profile.route"));
 app.use("/api/categories", authenticate, require("./routes/category.route"));
 app.use("/api/tasks", authenticate, require("./routes/task.route"));
 

@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const Profile = require("./profile.model");
 
 const userSchema = new Schema({
   username: {
@@ -25,6 +26,15 @@ userSchema.pre("save", async function (next) {
     user.password = hashedPwd;
   } catch (err) {
     return next(err);
+  }
+});
+
+userSchema.post("save", async function (next) {
+  const user = this;
+  try {
+    const profile = await Profile.create({ userId: user._id });
+  } catch (error) {
+    console.log(error);
   }
 });
 
