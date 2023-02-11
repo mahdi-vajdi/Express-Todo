@@ -33,7 +33,7 @@ exports.login = async (req, res) => {
   const foundUser = await User.findOne({ username: username }).exec();
   if (!foundUser) return res.sendStatus(401); // Unauthorized
   // Evaluate password
-  const match = foundUser.comparePassword;
+  const match = foundUser.comparePassword(password);
   if (match) {
     // Create JWTs
     const accessToken = foundUser.generateJWT("14m");
